@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pitch Pride Official — Wear the Game. Live Glory.</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Oswald:wght@400;500;600;700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="kit-stripe"></div>
+
+    <header class="site-header">
+        <div class="nav-row">
+            <button class="brand" data-go="home">
+                <img src="assets/logo.jpg" alt="Pitch Pride Official">
+                <div>
+                    <div class="brand-name">PITCH<span>PRIDE</span></div>
+                    <span class="brand-tag">Wear the Game. Live Glory.</span>
+                </div>
+            </button>
+            <button class="nav-toggle">☰</button>
+            <nav class="main-nav">
+                <button data-go="home" class="active">Home</button>
+                <button data-go="shop">Shop</button>
+                <button data-go="gallery">Reviews & Progress</button>
+                <button data-go="about">About</button>
+                <button data-go="contact">Contact</button>
+                <button data-go="admin">Admin</button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- HOME -->
+    <div class="page active" id="page-home">
+        <section class="hero">
+            <div class="container hero-grid">
+                <div>
+                    <span class="eyebrow">Labasa, Fiji · Football Jerseys</span>
+                    <h1>Wear the<br>game. Live <em>glory.</em></h1>
+                    <p class="lede">Club kits, national colours, retro classics and trackside gear — sourced for supporters who back their team on and off the pitch.</p>
+                    <div class="hero-actions">
+                        <button class="btn btn-gold" data-go="shop">Browse the Shop</button>
+                        <button class="btn btn-outline" data-go="contact">Order via Viber</button>
+                    </div>
+                    <div class="hero-badges">
+                        <span class="hero-badge">Pre-order basis</span>
+                        <span class="hero-badge">New drops every season</span>
+                        <span class="hero-badge">Top Quality</span>
+                    </div>
+                </div>
+                <div class="hero-visual">
+                    <img src="assets/logo.jpg" alt="Pitch Pride Official crest">
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="container">
+                <div class="section-head">
+                    <div><span class="eyebrow">The Lineup</span><h2>Featured jerseys</h2></div>
+                    <button class="btn btn-outline btn-sm" data-go="shop">View full shop</button>
+                </div>
+                <div class="grid" id="featured-grid"></div>
+            </div>
+        </section>
+
+        <section class="band">
+            <div class="container">
+                <span class="eyebrow" style="color:var(--gold-bright)">Two Grades, One Standard</span>
+                <h2>Match Edition for the pitch.<br>Fan Version for the stands.</h2>
+                <p>Every listing tells you which build you're getting — no surprises at drop-off.</p>
+                <button class="btn btn-gold" data-go="about" style="margin-top:24px;">See the difference</button>
+            </div>
+        </section>
+
+        <section class="alt">
+            <div class="container">
+                <div class="section-head">
+                    <div><span class="eyebrow">Top Leagues & More</span><h2>Shop by category</h2></div>
+                </div>
+                <div class="cat-strip" id="home-cat-strip"></div>
+            </div>
+        </section>
+    </div>
+
+    <!-- SHOP -->
+    <div class="page" id="page-shop">
+        <div class="page-head">
+            <div class="container">
+                <span class="eyebrow">Full Collection</span>
+                <h1>Shop</h1>
+                <p>Browse the lineup then enquire via Viber, phone or Facebook to place a pre-order. Pay on delivery as usual.</p>
+            </div>
+        </div>
+        <section style="padding-top:42px;">
+            <div class="container">
+                <div style="margin-bottom:20px;">
+                    <input type="text" id="shop-search" placeholder="🔍  Search jerseys, leagues..." class="search-input">
+                </div>
+                <div class="cat-strip" id="shop-cat-strip"></div>
+                <div class="grid" id="shop-grid"></div>
+                <div class="empty-state" id="shop-empty" style="display:none;">No jerseys found — try a different search or category.</div>
+            </div>
+        </section>
+    </div>
+
+    <!-- REVIEWS & PROGRESS -->
+    <div class="page" id="page-gallery">
+        <div class="page-head">
+            <div class="container">
+                <span class="eyebrow">Community</span>
+                <h1>Reviews & Progress</h1>
+                <p>See what our customers are saying and follow along as your order makes its way to Labasa.</p>
+            </div>
+        </div>
+        <section>
+            <div class="container">
+                <div class="section-head">
+                    <div><span class="eyebrow">Happy Customers</span><h2>Customer Reviews</h2></div>
+                </div>
+                <div class="gallery-grid" id="customer-reviews-grid"></div>
+                <div class="empty-state" id="customer-reviews-empty" style="display:none;">No reviews posted yet — check back soon.</div>
+            </div>
+        </section>
+        <section class="alt">
+            <div class="container">
+                <div class="section-head">
+                    <div><span class="eyebrow">Order Updates</span><h2>Package Progress</h2></div>
+                </div>
+                <div class="progress-grid" id="progress-grid"></div>
+                <div class="empty-state" id="progress-empty" style="display:none;">No updates posted yet — check back soon.</div>
+            </div>
+        </section>
+    </div>
+
+    <!-- ABOUT -->
+    <div class="page" id="page-about">
+        <div class="page-head">
+            <div class="container">
+                <span class="eyebrow">Our Story</span>
+                <h1>Built by supporters, for supporters</h1>
+                <p>Pitch Pride Official started in Labasa with one simple idea — Fijian fans shouldn't have to settle for low-quality kits.</p>
+            </div>
+        </div>
+        <section>
+            <div class="container">
+                <div class="section-head">
+                    <div><span class="eyebrow">Know Your Kit</span><h2>Match Edition vs. Fan Version</h2></div>
+                </div>
+                <div class="split">
+                    <div class="spec-card match">
+                        <span class="eyebrow">For the Pitch</span>
+                        <h3>Match Edition</h3>
+                        <p style="color:var(--ink-dim); margin-top:6px; font-size:.92rem;">Same as what players wear during actual matches.</p>
+                        <div style="margin-top:16px;">
+                            <div class="spec-row"><b>Fit</b><span>Slim, athletic — reduces grabbing, enhances movement</span></div>
+                            <div class="spec-row"><b>Material</b><span>Lightweight premium, advanced moisture-wicking</span></div>
+                            <div class="spec-row"><b>Tech</b><span>Nike Dri-FIT ADV, Adidas HEAT.RDY, Puma ULTRAWEAVE</span></div>
+                            <div class="spec-row"><b>Details</b><span>Heat-applied crests, ventilation zones, mesh panels</span></div>
+                            <div class="spec-row"><b>Price</b><span>More expensive</span></div>
+                            <div class="spec-row"><b>Durability</b><span>Built for performance, less robust for daily wear</span></div>
+                        </div>
+                    </div>
+                    <div class="spec-card fan">
+                        <span class="eyebrow" style="color:var(--navy);">For the Stands</span>
+                        <h3>Fan Version</h3>
+                        <p style="color:var(--ink-dim); margin-top:6px; font-size:.92rem;">Made for supporters to wear casually or at games.</p>
+                        <div style="margin-top:16px;">
+                            <div class="spec-row"><b>Fit</b><span>Regular or slightly loose, built for comfort</span></div>
+                            <div class="spec-row"><b>Material</b><span>Standard polyester, breathable but not as advanced</span></div>
+                            <div class="spec-row"><b>Tech</b><span>Basic sweat-wicking (Nike Dri-FIT, not ADV)</span></div>
+                            <div class="spec-row"><b>Details</b><span>Printed or heat-pressed logos, simpler finish</span></div>
+                            <div class="spec-row"><b>Price</b><span>More affordable</span></div>
+                            <div class="spec-row"><b>Durability</b><span>Made for casual wear, not high-intensity use</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="alt">
+            <div class="container">
+                <div class="section-head">
+                    <div><span class="eyebrow">Find Your Fit</span><h2>Size guide</h2></div>
+                </div>
+                <div class="size-tables">
+                    <div class="size-block">
+                        <div class="size-block-header fan-header">
+                            <span class="size-block-title">Fan Version</span>
+                            <span class="size-block-sub">Stadium / Replica Jersey</span>
+                        </div>
+                        <div class="size-table-wrap">
+                            <table class="size-table">
+                                <thead>
+                                    <tr><th>Size</th><th>Chest (cm)</th><th>Length (cm)</th><th>Sleeve (cm)</th><th>Height (cm)</th><th>Weight (kg)</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>S</td><td>86–91</td><td>68</td><td>22</td><td>160–170</td><td>50–60</td></tr>
+                                    <tr><td>M</td><td>96–101</td><td>70</td><td>23</td><td>170–175</td><td>60–65</td></tr>
+                                    <tr><td>L</td><td>106–111</td><td>72</td><td>24</td><td>175–180</td><td>65–70</td></tr>
+                                    <tr><td>XL</td><td>116–121</td><td>74</td><td>25</td><td>180–185</td><td>70–80</td></tr>
+                                    <tr><td>XXL</td><td>126–132</td><td>76</td><td>26</td><td>185–190</td><td>80–90</td></tr>
+                                    <tr><td>3XL</td><td>136–142</td><td>78</td><td>27</td><td>190–200</td><td>90–100</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="size-note">Regular / comfort fit — order your normal size.</p>
+                    </div>
+                    <div class="size-block">
+                        <div class="size-block-header match-header">
+                            <span class="size-block-title">Match Edition</span>
+                            <span class="size-block-sub">Player / Authentic Jersey</span>
+                        </div>
+                        <div class="size-table-wrap">
+                            <table class="size-table">
+                                <thead>
+                                    <tr><th>Size</th><th>Bust (cm)</th><th>Length (cm)</th><th>Width (cm)</th><th>Sleeve (cm)</th><th>Height (cm)</th><th>Weight (kg)</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>S</td><td>46</td><td>68</td><td>40.5</td><td>24</td><td>160–170</td><td>50–60</td></tr>
+                                    <tr><td>M</td><td>48</td><td>70</td><td>42</td><td>25</td><td>170–175</td><td>60–65</td></tr>
+                                    <tr><td>L</td><td>50</td><td>72</td><td>44</td><td>26</td><td>175–180</td><td>65–70</td></tr>
+                                    <tr><td>XL</td><td>52</td><td>74</td><td>46</td><td>26</td><td>180–185</td><td>70–80</td></tr>
+                                    <tr><td>XXL</td><td>54</td><td>76</td><td>48</td><td>27</td><td>185–190</td><td>80–90</td></tr>
+                                    <tr><td>3XL</td><td>56</td><td>78</td><td>50</td><td>28</td><td>190–200</td><td>90–100</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="size-note">Slim athletic fit — if between sizes, <strong>size up</strong>. Measurements ±1–3cm.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="band">
+            <div class="container">
+                <span class="eyebrow" style="color:var(--gold-bright)">Why Fans Choose Us</span>
+                <h2>New stock every season.</h2>
+                <p>From the curve of a crest to the weight of the fabric — every listing tells you exactly what you're getting.</p>
+            </div>
+        </section>
+
+        <section>
+            <div class="container">
+                <div class="section-head">
+                    <div><span class="eyebrow">Please Read</span><h2>Disclaimer</h2></div>
+                </div>
+                <div class="policy" style="max-width:760px;">
+                    <h3>Please note the following</h3>
+                    <ul>
+                        <li>Deposit paid is non-refundable (unless the order is still pending).</li>
+                        <li>Timeline provided is exact in majority of cases, unless depending on external factors beyond our control.</li>
+                        <li>Since we are on a pre-order basis, please choose your sizes carefully. Refunds are not available for change of mind.</li>
+                        <li>Please provide factual evidence for a false item — we check products before dispatch and do not encourage compensation for false claims.</li>
+                        <li>Once your item arrives and you are notified, please clear your balance within a week or inform us in advance.</li>
+                        <li>Failure to clear payment or notify us will result in the item being sold to recover cost.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- CONTACT -->
+    <div class="page" id="page-contact">
+        <div class="page-head">
+            <div class="container">
+                <span class="eyebrow">Get In Touch</span>
+                <h1>Order or ask a question</h1>
+                <p>We're a pre-order shop — message us your size and jersey choice and we'll confirm before you commit.</p>
+            </div>
+        </div>
+        <section>
+            <div class="container contact-grid">
+                <div>
+                    <h2 style="font-size:1.4rem;">Reach Pitch Pride Official</h2>
+                    <ul class="contact-list">
+                        <li><span class="ic">☎</span><div><b>Phone / Viber</b><span>+679 803 7625</span></div></li>
+                        <li><span class="ic">📍</span><div><b>Location</b><span>Labasa, Fiji</span></div></li>
+                        <li>
+                            <a href="https://www.instagram.com/pitchpride_official" target="_blank">
+                                <span class="ic"><img src="assets/instagram.png" alt="Instagram" class="social-ic"></span>
+                            </a>
+                            <div><b>Instagram</b><a href="https://www.instagram.com/pitchpride_official" target="_blank">pitchpride_official</a></div>
+                        </li>
+                        <li>
+                            <a href="https://www.facebook.com/PitchPrideOfficial" target="_blank">
+                                <span class="ic"><img src="assets/facebook.png" alt="Facebook" class="social-ic"></span>
+                            </a>
+                            <div><b>Facebook</b><a href="https://www.facebook.com/PitchPrideOfficial" target="_blank">Pitch Pride Official</a></div>
+                        </li>
+                        <li>
+                            <a href="https://www.tiktok.com/@pitchpride_official" target="_blank">
+                                <span class="ic"><img src="assets/tiktok.png" alt="TikTok" class="social-ic"></span>
+                            </a>
+                            <div><b>TikTok</b><a href="https://www.tiktok.com/@pitchpride_official" target="_blank">pitchpride_official</a></div>
+                        </li>
+                        <li>
+                            <a href="https://invite.viber.com/?g2=AQA51yqGT7QJvlSPcjhoVMfgEjNy2v2LcOQJKtSss9Sg70KwJTNk9kk0fXs0LvS%2B" target="_blank">
+                                <span class="ic"><img src="assets/viber.png" alt="Viber" class="social-ic"></span>
+                            </a>
+                            <div><b>Viber Community</b><a href="https://invite.viber.com/?g2=AQA51yqGT7QJvlSPcjhoVMfgEjNy2v2LcOQJKtSss9Sg70KwJTNk9kk0fXs0LvS%2B" target="_blank">Join PitchPride on Viber</a></div>
+                        </li>
+                    </ul>
+                    <div class="policy">
+                        <h3>Before you order</h3>
+                        <ul>
+                            <li>Deposits paid are non-refundable unless the order is still pending.</li>
+                            <li>We run on a pre-order basis — choose your size carefully. Refunds aren't available for change of mind.</li>
+                            <li>Once your item arrives, please clear your balance within a week or let us know in advance.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div>
+                    <h2 style="font-size:1.4rem;">Send an enquiry</h2>
+                    <form class="form" id="enquiry-form" style="margin-top:22px;">
+                        <div class="field"><label for="c-name">Your name</label><input id="c-name" type="text" placeholder="e.g. Naashit Hussain" required></div>
+                        <div class="field"><label for="c-jersey">Jersey / item of interest</label><input id="c-jersey" type="text" placeholder="e.g. Madrid Home Kit, size L"></div>
+                        <div class="field"><label for="c-msg">Message</label><textarea id="c-msg" rows="5" placeholder="Tell us what you're after"></textarea></div>
+                        <button class="btn btn-gold btn-block" type="submit">Send enquiry</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- ADMIN -->
+    <div class="page" id="page-admin">
+        <div id="lock-screen" class="admin-lock">
+            <span class="eyebrow">Staff Only</span>
+            <h1 style="font-size:1.5rem;">Admin login</h1>
+            <p style="color:var(--ink-dim); margin-top:10px; font-size:.92rem;">Sign in to manage jerseys, orders and progress updates.</p>
+            <input type="text" id="user-input" placeholder="Username" autocomplete="off">
+            <input type="password" id="pass-input" placeholder="Password">
+            <div class="error" id="login-error"></div>
+            <button class="btn btn-gold btn-block" id="unlock-btn">Sign in</button>
+        </div>
+
+        <div id="admin-area" class="container" style="display:none; padding:46px 28px 90px;">
+            <div class="admin-bar">
+                <div><span class="eyebrow">Staff Dashboard</span><h1 style="font-size:1.9rem;">Pitch Pride admin</h1></div>
+                <button class="btn btn-red btn-sm" id="lock-btn">Log out</button>
+            </div>
+
+            <div class="admin-tabs">
+                <button class="admin-tab active" data-tab="catalog">Catalog</button>
+                <button class="admin-tab" data-tab="orders">Order Updates</button>
+                <button class="admin-tab" data-tab="progress">Package Progress</button>
+                <button class="admin-tab" data-tab="creviews">Customer Reviews</button>
+                <button class="admin-tab" data-tab="messages">Messages</button>
+            </div>
+
+            <!-- CATALOG TAB -->
+            <div class="admin-panel active" id="tab-catalog">
+                <div class="admin-layout">
+                    <div class="admin-form">
+                        <h3 id="form-title">Add a new jersey</h3>
+                        <form class="form" id="product-form">
+                            <input type="hidden" id="edit-id">
+                            <div class="field"><label for="f-name">Name</label><input id="f-name" type="text" placeholder="e.g. Fiji National Home Kit" required></div>
+                            <div class="field"><label for="f-cat">Category</label><select id="f-cat" required></select></div>
+                            <div class="field"><label for="f-price-fan">Fan Version Price (FJD)</label><input id="f-price-fan" type="number" min="0" placeholder="e.g. 65"></div>
+                            <div class="field"><label for="f-price-match">Match Edition Price (FJD)</label><input id="f-price-match" type="number" min="0" placeholder="e.g. 95"></div>
+                            <div class="field">
+                                <label>Jersey Image</label>
+                                <input type="file" id="f-img-file" accept="image/*" class="upload-input">
+                                <div class="upload-preview" id="f-img-preview"></div>
+                                <input type="hidden" id="f-img">
+                            </div>
+                            <button class="btn btn-gold btn-block" type="submit" id="submit-btn">Add jersey</button>
+                            <button class="btn btn-outline btn-block" type="button" id="cancel-edit" style="display:none;">Cancel edit</button>
+                        </form>
+                    </div>
+                    <div>
+                        <div class="table-wrap">
+                            <table>
+                                <thead><tr><th>Image</th><th>Name</th><th>Category</th><th>Fan Price</th><th>Match Price</th><th>Actions</th></tr></thead>
+                                <tbody id="product-table"></tbody>
+                            </table>
+                        </div>
+                        <button class="btn btn-outline btn-sm" id="reset-btn" style="margin-top:16px;">Reset to defaults</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ORDERS TAB -->
+            <div class="admin-panel" id="tab-orders">
+                <div class="admin-layout">
+                    <div class="admin-form">
+                        <h3 id="order-form-title">Post an order update</h3>
+                        <form class="form" id="order-form">
+                            <input type="hidden" id="order-edit-id">
+                            <div class="field"><label for="o-name">Customer name / order ref</label><input id="o-name" type="text" placeholder="e.g. Naashit H." required></div>
+                            <div class="field">
+                                <label for="o-status">Status</label>
+                                <select id="o-status">
+                                    <option>Order received</option>
+                                    <option>Deposit confirmed</option>
+                                    <option>Preparing / sourcing stock</option>
+                                    <option>Shipped from supplier</option>
+                                    <option>Arrived in Fiji</option>
+                                    <option>Ready for pickup / delivery</option>
+                                    <option>Completed</option>
+                                </select>
+                            </div>
+                            <div class="field"><label for="o-note">Note (optional)</label><textarea id="o-note" rows="3" placeholder="e.g. Expected by next Friday"></textarea></div>
+                            <div class="field">
+                                <label>Order Photo (optional)</label>
+                                <input type="file" id="o-img-file" accept="image/*" class="upload-input">
+                                <div class="upload-preview" id="o-img-preview"></div>
+                                <input type="hidden" id="o-img">
+                            </div>
+                            <button class="btn btn-gold btn-block" type="submit" id="order-submit-btn">Post update</button>
+                            <button class="btn btn-outline btn-block" type="button" id="order-cancel-edit" style="display:none;">Cancel edit</button>
+                        </form>
+                    </div>
+                    <div>
+                        <div class="table-wrap">
+                            <table>
+                                <thead><tr><th>Image</th><th>Customer / Ref</th><th>Status</th><th>Note</th><th>Updated</th><th>Actions</th></tr></thead>
+                                <tbody id="order-table"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PACKAGE PROGRESS TAB -->
+            <div class="admin-panel" id="tab-progress">
+                <div class="admin-layout">
+                    <div class="admin-form">
+                        <h3>Post a progress update</h3>
+                        <form class="form" id="progress-form">
+                            <input type="hidden" id="prog-edit-id">
+                            <div class="field"><label for="prog-title">Title</label><input id="prog-title" type="text" placeholder="e.g. Stock arrived at supplier" required></div>
+                            <div class="field"><label for="prog-caption">Caption / description</label><textarea id="prog-caption" rows="3" placeholder="e.g. Jerseys are being packaged and will ship next week"></textarea></div>
+                            <div class="field">
+                                <label>Progress Photo</label>
+                                <input type="file" id="prog-img-file" accept="image/*" class="upload-input">
+                                <div class="upload-preview" id="prog-img-preview"></div>
+                                <input type="hidden" id="prog-img">
+                            </div>
+                            <div class="field">
+                                <label for="prog-stage">Stage</label>
+                                <select id="prog-stage">
+                                    <option>Order placed with supplier</option>
+                                    <option>Stock being prepared</option>
+                                    <option>Packed and ready to ship</option>
+                                    <option>Shipped / in transit</option>
+                                    <option>Arrived in Fiji</option>
+                                    <option>Out for delivery</option>
+                                    <option>Delivered</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-gold btn-block" type="submit" id="prog-submit-btn">Post update</button>
+                            <button class="btn btn-outline btn-block" type="button" id="prog-cancel-edit" style="display:none;">Cancel edit</button>
+                        </form>
+                    </div>
+                    <div>
+                        <div class="table-wrap">
+                            <table>
+                                <thead><tr><th>Image</th><th>Title</th><th>Stage</th><th>Date</th><th>Actions</th></tr></thead>
+                                <tbody id="progress-table"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CUSTOMER REVIEWS TAB -->
+            <div class="admin-panel" id="tab-creviews">
+                <div class="admin-layout">
+                    <div class="admin-form">
+                        <h3>Post a customer review</h3>
+                        <form class="form" id="creview-form">
+                            <input type="hidden" id="cr-edit-id">
+                            <div class="field"><label for="cr-caption">Caption (optional)</label><textarea id="cr-caption" rows="3" placeholder="e.g. Happy customer from Suva!"></textarea></div>
+                            <div class="field">
+                                <label>Review Screenshot</label>
+                                <input type="file" id="cr-img-file" accept="image/*" class="upload-input">
+                                <div class="upload-preview" id="cr-img-preview"></div>
+                                <input type="hidden" id="cr-img">
+                            </div>
+                            <button class="btn btn-gold btn-block" type="submit" id="cr-submit-btn">Post review</button>
+                            <button class="btn btn-outline btn-block" type="button" id="cr-cancel-edit" style="display:none;">Cancel edit</button>
+                        </form>
+                    </div>
+                    <div>
+                        <div class="table-wrap">
+                            <table>
+                                <thead><tr><th>Image</th><th>Caption</th><th>Date</th><th>Actions</th></tr></thead>
+                                <tbody id="creview-table"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MESSAGES TAB -->
+            <div class="admin-panel" id="tab-messages">
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>Name</th><th>Jersey / Item</th><th>Message</th><th>Date</th><th>Actions</th></tr></thead>
+                        <tbody id="message-table"></tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <div class="brand-name" style="font-size:1rem; color:#fff;">PITCH<span style="color:var(--gold-bright)">PRIDE</span> OFFICIAL</div>
+                    <p style="margin-top:12px; max-width:320px;">Top league jerseys, international kits, retro classics and trackside gear — based in Labasa, Fiji.</p>
+                </div>
+                <div>
+                    <h4>Explore</h4>
+                    <ul>
+                        <li><button data-go="shop" class="footer-link">Shop</button></li>
+                        <li><button data-go="gallery" class="footer-link">Reviews & Progress</button></li>
+                        <li><button data-go="about" class="footer-link">About Us</button></li>
+                        <li><button data-go="contact" class="footer-link">Contact</button></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>Reach us</h4>
+                    <ul>
+                        <li><a href="tel:6798037625">+679 803 7625</a></li>
+                        <li>
+                            <a href="https://www.instagram.com/pitchpride_official" target="_blank">
+                                <svg viewBox="0 0 24 24" width="26" height="26" fill="rgba(255,255,255,0.75)" style="transition:fill 0.2s;" onmouseover="this.setAttribute('fill','#fff')" onmouseout="this.setAttribute('fill','rgba(255,255,255,0.75)')">
+                                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+                                </svg>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.facebook.com/PitchPrideOfficial" target="_blank">
+                                <svg viewBox="0 0 24 24" width="26" height="26" fill="rgba(255,255,255,0.75)" style="transition:fill 0.2s;" onmouseover="this.setAttribute('fill','#fff')" onmouseout="this.setAttribute('fill','rgba(255,255,255,0.75)')">
+                                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                                </svg>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.tiktok.com/@pitchpride_official" target="_blank">
+                                <svg viewBox="0 0 24 24" width="26" height="26" fill="rgba(255,255,255,0.75)" style="transition:fill 0.2s;" onmouseover="this.setAttribute('fill','#fff')" onmouseout="this.setAttribute('fill','rgba(255,255,255,0.75)')">
+                                    <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.2 8.2 0 004.79 1.52V6.75a4.85 4.85 0 01-1.02-.06z" />
+                                </svg>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://invite.viber.com/?g2=AQA51yqGT7QJvlSPcjhoVMfgEjNy2v2LcOQJKtSss9Sg70KwJTNk9kk0fXs0LvS%2B" target="_blank">
+                                <svg viewBox="0 0 24 24" width="26" height="26" fill="rgba(255,255,255,0.75)" style="transition:fill 0.2s;" onmouseover="this.setAttribute('fill','#fff')" onmouseout="this.setAttribute('fill','rgba(255,255,255,0.75)')">
+                                    <path d="M11.4 0C5.5 0 1 4.3 1 9.7c0 3 1.5 5.7 3.9 7.5v3.8l3.6-2c.9.2 1.9.3 2.9.3 5.9 0 10.4-4.3 10.4-9.7S17.3 0 11.4 0zm1 13.4c-.2.2-.5.4-.8.4-.3 0-.5-.1-.8-.3-1.3-.9-2.4-2-3.3-3.3-.4-.6-.8-1.2-1-1.9-.1-.3 0-.6.2-.9l.6-.6c.4-.4 1-.4 1.4 0l.9.9c.4.4.4 1 0 1.4l-.2.2c.5.8 1.1 1.4 1.9 1.9l.2-.2c.4-.4 1-.4 1.4 0l.9.9c.4.4.4 1-.4 1.5zm2.8-4.2c-.1-1.8-1.5-3.2-3.3-3.3-.3 0-.5-.2-.5-.5s.2-.5.5-.5c2.4.1 4.2 1.9 4.3 4.3 0 .3-.2.5-.5.5s-.5-.2-.5-.5zm1.8.1c-.1-2.8-2.3-5-5.1-5.1-.3 0-.5-.2-.5-.5s.2-.5.5-.5c3.4.1 6 2.7 6.1 6.1 0 .3-.2.5-.5.5s-.5-.2-.5-.5z" />
+                                </svg>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <span>© 2026 Pitch Pride Official, Labasa, Fiji</span>
+                <span>Built by Vitistyle Development</span>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/app.js"></script>
+
+</body>
+</html>
