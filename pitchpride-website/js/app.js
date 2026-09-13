@@ -1,11 +1,28 @@
 /* ============================================
    PITCH PRIDE OFFICIAL — app.js
-   Supabase connected + file upload version
+   Firebase Firestore (data) + Cloudinary (photos)
+   No paid database, no subscription to lapse.
    ============================================ */
 
-const SUPABASE_URL = 'https://uqnidyxvncvyghvqbduh.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVxbmlkeXh2bmN2eWdodnFiZHVoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI4NTY5NjIsImV4cCI6MjA5ODQzMjk2Mn0.GC4nUTJB6RQAQDkt1rkfOQB1bCTBMDeB0Cz7FVseGV8';
-const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+/* ============ 1. PASTE YOUR OWN CONFIG HERE ============ */
+// Firebase config — from Firebase Console > Project settings > Your apps
+const firebaseConfig = {
+    apiKey: "AIzaSyDjSHqeXT9mcAQPHJid_Lo2AiRSzcygqvI",
+    authDomain: "pitchpride-7a6a9.firebaseapp.com",
+    projectId: "pitchpride-7a6a9",
+    storageBucket: "pitchpride-7a6a9.firebasestorage.app",
+    messagingSenderId: "284559737116",
+    appId: "1:284559737116:web:380206d4bcf2ff0ca3bad9"
+};
+
+// Cloudinary config — from cloudinary.com dashboard + your unsigned upload preset
+const CLOUDINARY_CLOUD_NAME = "dpxyztc7";
+const CLOUDINARY_UPLOAD_PRESET = "pitchpride_uploads";
+/* ========================================================= */
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const FieldValue = firebase.firestore.FieldValue;
 
 const ADMIN_USER = 'naashithussain';
 const ADMIN_PASS = 'pitchpride679';
@@ -30,14 +47,29 @@ function toast(msg) {
     el._t = setTimeout(() => el.classList.remove('show'), 2400);
 }
 
-/* ============ IMAGE UPLOAD ============ */
+// Turns a Firestore query snapshot into a plain array of {id, ...fields}
+function snapToList(snap) {
+    return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+}
+
+/* ============ IMAGE UPLOAD (Cloudinary) ============ */
 async function uploadImage(file, folder) {
-    const ext = file.name.split('.').pop();
-    const path = `${folder}/${Date.now()}.${ext}`;
-    const { error } = await db.storage.from('image').upload(path, file, { upsert: true });
-    if (error) { toast('Image upload failed.'); return null; }
-    const { data } = db.storage.from('image').getPublicUrl(path);
-    return data.publicUrl;
+    try {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+        formData.append('folder', `pitchpride/${folder}`);
+        const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, {
+            method: 'POST',
+            body: formData
+        });
+        const data = await res.json();
+        if (!data.secure_url) { toast('Image upload failed.'); return null; }
+        return data.secure_url;
+    } catch (e) {
+        toast('Image upload failed.');
+        return null;
+    }
 }
 
 function setupUploadPreview(inputId, previewId) {
@@ -101,8 +133,9 @@ function cardHTML(p) {
 
 /* ============ HOME ============ */
 async function loadHome() {
-    const { data: products } = await db.from('products').select('*').order('created_at').limit(4);
-    document.getElementById('featured-grid').innerHTML = (products || []).map(cardHTML).join('');
+    const snap = await db.collection('products').orderBy('created_at').limit(4).get();
+    const products = snapToList(snap);
+    document.getElementById('featured-grid').innerHTML = products.map(cardHTML).join('');
 
     document.getElementById('home-cat-strip').innerHTML =
         CATEGORIES.map(c => `<button class="cat-pill" data-cat-home="${c}">${c}</button>`).join('');
@@ -123,11 +156,10 @@ async function renderShop() {
         btn.addEventListener('click', () => { shopActiveCat = btn.dataset.shopcat; renderShop(); });
     });
 
-    let query = db.from('products').select('*').order('created_at');
-    if (shopActiveCat !== 'All') query = query.eq('category', shopActiveCat);
+    const snap = await db.collection('products').orderBy('created_at').get();
+    let list = snapToList(snap);
+    if (shopActiveCat !== 'All') list = list.filter(p => p.category === shopActiveCat);
     const q = (document.getElementById('shop-search')?.value || '').toLowerCase().trim();
-    const { data: products } = await query;
-    let list = products || [];
     if (q) list = list.filter(p =>
         p.name.toLowerCase().includes(q) ||
         p.category.toLowerCase().includes(q)
@@ -153,11 +185,12 @@ function customerReviewCardHTML(r) {
 }
 
 async function renderCustomerReviews() {
-    const { data: list } = await db.from('customer_reviews').select('*').order('created_at', { ascending: false });
+    const snap = await db.collection('customer_reviews').orderBy('created_at', 'desc').get();
+    const list = snapToList(snap);
     const grid = document.getElementById('customer-reviews-grid');
     const empty = document.getElementById('customer-reviews-empty');
-    grid.innerHTML = (list || []).map(customerReviewCardHTML).join('');
-    empty.style.display = (list && list.length) ? 'none' : 'block';
+    grid.innerHTML = list.map(customerReviewCardHTML).join('');
+    empty.style.display = list.length ? 'none' : 'block';
 }
 
 function progressCardHTML(pg) {
@@ -177,24 +210,29 @@ function progressCardHTML(pg) {
 }
 
 async function renderProgress() {
-    const { data: list } = await db.from('progress').select('*').order('created_at', { ascending: false });
+    const snap = await db.collection('progress').orderBy('created_at', 'desc').get();
+    const list = snapToList(snap);
     const grid = document.getElementById('progress-grid');
     const empty = document.getElementById('progress-empty');
-    grid.innerHTML = (list || []).map(progressCardHTML).join('');
-    empty.style.display = (list && list.length) ? 'none' : 'block';
+    grid.innerHTML = list.map(progressCardHTML).join('');
+    empty.style.display = list.length ? 'none' : 'block';
 }
 
 /* ============ CONTACT FORM ============ */
 document.getElementById('enquiry-form').addEventListener('submit', async e => {
     e.preventDefault();
-    const { error } = await db.from('enquiries').insert([{
-        customer_name: document.getElementById('c-name').value.trim(),
-        item_interest: document.getElementById('c-jersey').value.trim(),
-        message: document.getElementById('c-msg').value.trim(),
-    }]);
-    if (error) { toast('Something went wrong. Please try again.'); return; }
-    toast('Message sent — we will reply by Viber or Facebook.');
-    e.target.reset();
+    try {
+        await db.collection('enquiries').add({
+            customer_name: document.getElementById('c-name').value.trim(),
+            item_interest: document.getElementById('c-jersey').value.trim(),
+            message: document.getElementById('c-msg').value.trim(),
+            created_at: FieldValue.serverTimestamp(),
+        });
+        toast('Message sent — we will reply by Viber or Facebook.');
+        e.target.reset();
+    } catch (err) {
+        toast('Something went wrong. Please try again.');
+    }
 });
 
 /* ============ ADMIN AUTH ============ */
@@ -256,9 +294,10 @@ document.querySelectorAll('.admin-tab').forEach(tab => {
 
 /* ============ ADMIN — CATALOG ============ */
 async function renderCatalogTable() {
-    const { data: list } = await db.from('products').select('*').order('created_at');
+    const snap = await db.collection('products').orderBy('created_at').get();
+    const list = snapToList(snap);
     const tbody = document.getElementById('product-table');
-    if (!list || !list.length) {
+    if (!list.length) {
         tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--ink-dim);padding:30px;">No jerseys yet.</td></tr>`;
         return;
     }
@@ -281,16 +320,17 @@ async function renderCatalogTable() {
     tbody.querySelectorAll('[data-action="delete"]').forEach(btn => {
         btn.addEventListener('click', async () => {
             const id = btn.closest('tr').dataset.id;
-            await db.from('products').delete().eq('id', id);
+            await db.collection('products').doc(id).delete();
             renderCatalogTable(); toast('Jersey removed.');
         });
     });
     tbody.querySelectorAll('[data-action="edit"]').forEach(btn => {
         btn.addEventListener('click', async () => {
             const id = btn.closest('tr').dataset.id;
-            const { data } = await db.from('products').select('*').eq('id', id).single();
-            if (!data) return;
-            document.getElementById('edit-id').value = data.id;
+            const doc = await db.collection('products').doc(id).get();
+            if (!doc.exists) return;
+            const data = doc.data();
+            document.getElementById('edit-id').value = id;
             document.getElementById('f-name').value = data.name;
             document.getElementById('f-cat').value = data.category;
             document.getElementById('f-price-fan').value = data.price_fan || '';
@@ -332,8 +372,14 @@ document.getElementById('product-form').addEventListener('submit', async e => {
         price_match: document.getElementById('f-price-match').value ? Number(document.getElementById('f-price-match').value) : null,
         image_url: imageUrl,
     };
-    if (id) { await db.from('products').update(data).eq('id', id); toast('Jersey updated.'); }
-    else { await db.from('products').insert([data]); toast('Jersey added.'); }
+    if (id) {
+        await db.collection('products').doc(id).update(data);
+        toast('Jersey updated.');
+    } else {
+        data.created_at = FieldValue.serverTimestamp();
+        await db.collection('products').add(data);
+        toast('Jersey added.');
+    }
 
     btn.disabled = false;
     resetCatalogForm();
@@ -342,7 +388,11 @@ document.getElementById('product-form').addEventListener('submit', async e => {
 
 document.getElementById('reset-btn').addEventListener('click', async () => {
     if (confirm('Reset catalog back to default jerseys?')) {
-        await db.from('products').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+        const snap = await db.collection('products').get();
+        const batchDelete = db.batch();
+        snap.docs.forEach(d => batchDelete.delete(d.ref));
+        await batchDelete.commit();
+
         const defaults = [
             { name: 'Madrid Home Kit', category: 'La Liga', price_fan: 65, price_match: 95, image_url: '' },
             { name: 'Barca Away Kit', category: 'La Liga', price_fan: 65, price_match: 95, image_url: '' },
@@ -365,16 +415,23 @@ document.getElementById('reset-btn').addEventListener('click', async () => {
             { name: 'Pacific Rugby Jersey', category: 'Rugby', price_fan: 75, price_match: 90, image_url: '' },
             { name: 'Junior Home Kit Set', category: 'Kids Set', price_fan: 55, price_match: null, image_url: '' },
         ];
-        await db.from('products').insert(defaults);
+        const batchAdd = db.batch();
+        defaults.forEach(item => {
+            const ref = db.collection('products').doc();
+            batchAdd.set(ref, { ...item, created_at: FieldValue.serverTimestamp() });
+        });
+        await batchAdd.commit();
+
         renderCatalogTable(); toast('Catalog reset.');
     }
 });
 
 /* ============ ADMIN — ORDER UPDATES ============ */
 async function renderOrderTable() {
-    const { data: list } = await db.from('orders').select('*').order('updated_at', { ascending: false });
+    const snap = await db.collection('orders').orderBy('updated_at', 'desc').get();
+    const list = snapToList(snap);
     const tbody = document.getElementById('order-table');
-    if (!list || !list.length) {
+    if (!list.length) {
         tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--ink-dim);padding:30px;">No order updates yet.</td></tr>`;
         return;
     }
@@ -383,7 +440,7 @@ async function renderOrderTable() {
         <td>${o.img ? `<img src="${o.img}" alt="order">` : '—'}</td>
         <td>${o.customer_ref}</td><td>${o.status}</td>
         <td>${o.note || '—'}</td>
-        <td>${o.updated_at ? o.updated_at.slice(0, 10) : ''}</td>
+        <td>${o.updated_at && o.updated_at.toDate ? o.updated_at.toDate().toISOString().slice(0, 10) : ''}</td>
         <td><div class="row-actions">
             <button class="icon-btn" data-oaction="edit">Edit</button>
             <button class="icon-btn danger" data-oaction="delete">Delete</button>
@@ -393,16 +450,17 @@ async function renderOrderTable() {
     tbody.querySelectorAll('[data-oaction="delete"]').forEach(btn => {
         btn.addEventListener('click', async () => {
             const id = btn.closest('tr').dataset.id;
-            await db.from('orders').delete().eq('id', id);
+            await db.collection('orders').doc(id).delete();
             renderOrderTable(); toast('Order update removed.');
         });
     });
     tbody.querySelectorAll('[data-oaction="edit"]').forEach(btn => {
         btn.addEventListener('click', async () => {
             const id = btn.closest('tr').dataset.id;
-            const { data: o } = await db.from('orders').select('*').eq('id', id).single();
-            if (!o) return;
-            document.getElementById('order-edit-id').value = o.id;
+            const doc = await db.collection('orders').doc(id).get();
+            if (!doc.exists) return;
+            const o = doc.data();
+            document.getElementById('order-edit-id').value = id;
             document.getElementById('o-name').value = o.customer_ref;
             document.getElementById('o-status').value = o.status;
             document.getElementById('o-note').value = o.note || '';
@@ -439,10 +497,10 @@ document.getElementById('order-form').addEventListener('submit', async e => {
         status: document.getElementById('o-status').value,
         note: document.getElementById('o-note').value.trim(),
         img: imgUrl,
-        updated_at: new Date().toISOString(),
+        updated_at: FieldValue.serverTimestamp(),
     };
-    if (id) { await db.from('orders').update(data).eq('id', id); toast('Order update saved.'); }
-    else { await db.from('orders').insert([data]); toast('Order update posted.'); }
+    if (id) { await db.collection('orders').doc(id).update(data); toast('Order update saved.'); }
+    else { await db.collection('orders').add(data); toast('Order update posted.'); }
     btn.disabled = false;
     resetOrderForm();
     renderOrderTable();
@@ -450,9 +508,10 @@ document.getElementById('order-form').addEventListener('submit', async e => {
 
 /* ============ ADMIN — PACKAGE PROGRESS ============ */
 async function renderProgressTable() {
-    const { data: list } = await db.from('progress').select('*').order('created_at', { ascending: false });
+    const snap = await db.collection('progress').orderBy('created_at', 'desc').get();
+    const list = snapToList(snap);
     const tbody = document.getElementById('progress-table');
-    if (!list || !list.length) {
+    if (!list.length) {
         tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:var(--ink-dim);padding:30px;">No progress updates yet.</td></tr>`;
         return;
     }
@@ -469,16 +528,17 @@ async function renderProgressTable() {
     tbody.querySelectorAll('[data-pgaction="delete"]').forEach(btn => {
         btn.addEventListener('click', async () => {
             const id = btn.closest('tr').dataset.id;
-            await db.from('progress').delete().eq('id', id);
+            await db.collection('progress').doc(id).delete();
             renderProgressTable(); toast('Progress update removed.');
         });
     });
     tbody.querySelectorAll('[data-pgaction="edit"]').forEach(btn => {
         btn.addEventListener('click', async () => {
             const id = btn.closest('tr').dataset.id;
-            const { data: pg } = await db.from('progress').select('*').eq('id', id).single();
-            if (!pg) return;
-            document.getElementById('prog-edit-id').value = pg.id;
+            const doc = await db.collection('progress').doc(id).get();
+            if (!doc.exists) return;
+            const pg = doc.data();
+            document.getElementById('prog-edit-id').value = id;
             document.getElementById('prog-title').value = pg.title;
             document.getElementById('prog-caption').value = pg.caption || '';
             document.getElementById('prog-img').value = pg.img || '';
@@ -515,8 +575,14 @@ document.getElementById('progress-form').addEventListener('submit', async e => {
         stage: document.getElementById('prog-stage').value,
         date: todayStr(),
     };
-    if (id) { await db.from('progress').update(data).eq('id', id); toast('Progress update saved.'); }
-    else { await db.from('progress').insert([data]); toast('Progress update posted.'); }
+    if (id) {
+        await db.collection('progress').doc(id).update(data);
+        toast('Progress update saved.');
+    } else {
+        data.created_at = FieldValue.serverTimestamp();
+        await db.collection('progress').add(data);
+        toast('Progress update posted.');
+    }
     btn.disabled = false;
     resetProgressForm();
     renderProgressTable();
@@ -524,9 +590,10 @@ document.getElementById('progress-form').addEventListener('submit', async e => {
 
 /* ============ ADMIN — CUSTOMER REVIEWS ============ */
 async function renderCReviewTable() {
-    const { data: list } = await db.from('customer_reviews').select('*').order('created_at', { ascending: false });
+    const snap = await db.collection('customer_reviews').orderBy('created_at', 'desc').get();
+    const list = snapToList(snap);
     const tbody = document.getElementById('creview-table');
-    if (!list || !list.length) {
+    if (!list.length) {
         tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:var(--ink-dim);padding:30px;">No customer reviews posted yet.</td></tr>`;
         return;
     }
@@ -534,7 +601,7 @@ async function renderCReviewTable() {
     <tr data-id="${r.id}">
         <td>${r.img ? `<img src="${r.img}" alt="review">` : '—'}</td>
         <td>${r.caption || '—'}</td>
-        <td>${r.created_at ? r.created_at.slice(0, 10) : ''}</td>
+        <td>${r.created_at && r.created_at.toDate ? r.created_at.toDate().toISOString().slice(0, 10) : ''}</td>
         <td><div class="row-actions">
             <button class="icon-btn" data-craction="edit">Edit</button>
             <button class="icon-btn danger" data-craction="delete">Delete</button>
@@ -544,16 +611,17 @@ async function renderCReviewTable() {
     tbody.querySelectorAll('[data-craction="delete"]').forEach(btn => {
         btn.addEventListener('click', async () => {
             const id = btn.closest('tr').dataset.id;
-            await db.from('customer_reviews').delete().eq('id', id);
+            await db.collection('customer_reviews').doc(id).delete();
             renderCReviewTable(); toast('Review removed.');
         });
     });
     tbody.querySelectorAll('[data-craction="edit"]').forEach(btn => {
         btn.addEventListener('click', async () => {
             const id = btn.closest('tr').dataset.id;
-            const { data: r } = await db.from('customer_reviews').select('*').eq('id', id).single();
-            if (!r) return;
-            document.getElementById('cr-edit-id').value = r.id;
+            const doc = await db.collection('customer_reviews').doc(id).get();
+            if (!doc.exists) return;
+            const r = doc.data();
+            document.getElementById('cr-edit-id').value = id;
             document.getElementById('cr-caption').value = r.caption || '';
             document.getElementById('cr-img').value = r.img || '';
             if (r.img) document.getElementById('cr-img-preview').innerHTML = `<img src="${r.img}" style="max-width:100%;max-height:120px;border-radius:4px;margin-top:8px;border:1px solid var(--line);">`;
@@ -583,8 +651,14 @@ document.getElementById('creview-form').addEventListener('submit', async e => {
     if (!imgUrl) { toast('Please select an image.'); btn.disabled = false; btn.textContent = 'Post review'; return; }
     const id = document.getElementById('cr-edit-id').value;
     const data = { caption: document.getElementById('cr-caption').value.trim(), img: imgUrl };
-    if (id) { await db.from('customer_reviews').update(data).eq('id', id); toast('Review updated.'); }
-    else { await db.from('customer_reviews').insert([data]); toast('Review posted.'); }
+    if (id) {
+        await db.collection('customer_reviews').doc(id).update(data);
+        toast('Review updated.');
+    } else {
+        data.created_at = FieldValue.serverTimestamp();
+        await db.collection('customer_reviews').add(data);
+        toast('Review posted.');
+    }
     btn.disabled = false;
     resetCReviewForm();
     renderCReviewTable();
@@ -592,9 +666,10 @@ document.getElementById('creview-form').addEventListener('submit', async e => {
 
 /* ============ ADMIN — MESSAGES ============ */
 async function renderMessageTable() {
-    const { data: list } = await db.from('enquiries').select('*').order('created_at', { ascending: false });
+    const snap = await db.collection('enquiries').orderBy('created_at', 'desc').get();
+    const list = snapToList(snap);
     const tbody = document.getElementById('message-table');
-    if (!list || !list.length) {
+    if (!list.length) {
         tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:var(--ink-dim);padding:30px;">No messages yet.</td></tr>`;
         return;
     }
@@ -603,7 +678,7 @@ async function renderMessageTable() {
         <td>${m.customer_name || '—'}</td>
         <td>${m.item_interest || '—'}</td>
         <td>${m.message || '—'}</td>
-        <td>${m.created_at ? m.created_at.slice(0, 10) : ''}</td>
+        <td>${m.created_at && m.created_at.toDate ? m.created_at.toDate().toISOString().slice(0, 10) : ''}</td>
         <td><div class="row-actions">
             <button class="icon-btn danger" data-maction="delete">Delete</button>
         </div></td>
@@ -612,7 +687,7 @@ async function renderMessageTable() {
     tbody.querySelectorAll('[data-maction="delete"]').forEach(btn => {
         btn.addEventListener('click', async () => {
             const id = btn.closest('tr').dataset.id;
-            await db.from('enquiries').delete().eq('id', id);
+            await db.collection('enquiries').doc(id).delete();
             renderMessageTable(); toast('Message removed.');
         });
     });
